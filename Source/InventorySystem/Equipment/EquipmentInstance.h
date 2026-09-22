@@ -29,7 +29,7 @@ public:
 
 
 	UFUNCTION(BlueprintCallable, Category = "Equipment Instance")
-	void Initalize(UItemInstance* ItemInstance);
+	void Initalize(UItemInstance* ItemInstance, ACharacter* Character);
 
 
 	UFUNCTION(BlueprintCallable, Category = "Equipment Instance")

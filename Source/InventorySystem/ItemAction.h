@@ -6,6 +6,7 @@
 #include "UObject/Object.h"
 #include "ItemAction.generated.h"
 
+class UItemInstance;
 /**
  * 
  */
@@ -17,5 +18,5 @@ class INVENTORYSYSTEM_API UItemAction : public UObject
 public:
 
 	UFUNCTION(BlueprintImplementableEvent)
-	bool Exectue(AActor* ItemOwner);
+	bool Exectue(AActor* ItemOwner,UItemInstance* ItemInstance);
 };

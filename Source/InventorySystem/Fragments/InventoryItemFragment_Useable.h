@@ -7,6 +7,7 @@
 #include "InventoryItemFragment_Useable.generated.h"
 
 class UItemAction;
+class UItemInstance;
 /**
  * 
  */
@@ -17,7 +18,7 @@ class INVENTORYSYSTEM_API UInventoryItemFragment_Useable : public UInventoryItem
 public:
 
 	UFUNCTION(BlueprintCallable)
-	bool Use(AActor* ItemOwner);	
+	bool Use(AActor* ItemOwner,UItemInstance* ItemInstance);	
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Options")
 	bool bComsumeOnUse = true;	
