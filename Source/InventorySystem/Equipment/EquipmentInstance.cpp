@@ -4,8 +4,12 @@
 #include "InventorySystem/Items/ItemInstance.h"
 #include "InventorySystem/Equipment/EquipmentDefinition.h"
 #include "GameFramework/Character.h"
+#include "GameplayEffect.h"	
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"	
+#include "GameFramework/CharacterMovementComponent.h"
 
-void UEquipmentInstance::Initalize(UItemInstance* ItemInstance, ACharacter* Character)
+void UEquipmentInstance::Initalize(UItemInstance* ItemInstance, ACharacter* Character, TSubclassOf<UGameplayEffect> EquipmentGE)
 {
 	if (!ItemInstance) return;
 
@@ -17,10 +21,10 @@ void UEquipmentInstance::Initalize(UItemInstance* ItemInstance, ACharacter* Char
 
 	if (!EquippableFragment) return;
 	EquipmentDefinition = EquippableFragment->EquipmentDefinition;
-	SpawnEquipmentActor(Character);
+	SpawnEquipmentActor(Character, EquipmentGE);
 }
 
-void UEquipmentInstance::SpawnEquipmentActor(ACharacter* Character)
+void UEquipmentInstance::SpawnEquipmentActor(ACharacter* Character,TSubclassOf<UGameplayEffect> EquipmentGE)
 {
 	UEquipmentDefinition* DefinitionCDO = EquipmentDefinition.GetDefaultObject();
 
@@ -36,7 +40,44 @@ void UEquipmentInstance::SpawnEquipmentActor(ACharacter* Character)
 		DefinitionCDO->EquipmentSocketName
 	);
 
-	//Can add gameplay effects and stats in this function.
+	UAbilitySystemComponent* OwnerASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Character);
+	if (!OwnerASC) return;
+	if(EquipmentGE)
+	{
+		FGameplayEffectContextHandle EffectContext = OwnerASC->MakeEffectContext();
+		EffectContext.AddSourceObject(this); //Can also be sourceiteminstance depending on how you want to reference it.
+		FGameplayEffectSpecHandle SpecHandle = OwnerASC->MakeOutgoingSpec(EquipmentGE, 1.f, EffectContext);
+
+		if(SpecHandle.IsValid())
+		{
+			for (const auto& Pair : SourceItemInstance->StatsMap)
+			{
+				FGameplayTag StatTag = Pair.Key;
+				float StatValue = Pair.Value;
+				SpecHandle.Data->SetSetByCallerMagnitude(StatTag, StatValue);
+			}
+			const FActiveGameplayEffectHandle EffectHandle = OwnerASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
+
+			AppliedGEHandles.Add(EffectHandle);
+		}
+	}
+
+	if (DefinitionCDO->EffectsToApply.Num() > 0)
+	{
+		for (TSubclassOf<UGameplayEffect> EffectClass : DefinitionCDO->EffectsToApply)
+		{
+			FGameplayEffectContextHandle EffectContext = OwnerASC->MakeEffectContext();
+			EffectContext.AddSourceObject(this);
+
+			const FActiveGameplayEffectHandle EffectHandle = OwnerASC->ApplyGameplayEffectToSelf(
+				EffectClass->GetDefaultObject<UGameplayEffect>(),
+				1.f, EffectContext
+			);
+
+			AppliedGEHandles.Add(EffectHandle);
+
+		}
+	}
 }
 
 void UEquipmentInstance::DestroyEquipmentActor(ACharacter* Character)
@@ -45,6 +86,17 @@ void UEquipmentInstance::DestroyEquipmentActor(ACharacter* Character)
 	{
 		SpawnedEquipmentActor->Destroy();
 		SpawnedEquipmentActor = nullptr;
+		UAbilitySystemComponent* OwnerASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Character);
+
+		if(OwnerASC)
+		{
+			for (FActiveGameplayEffectHandle& EffectHandle : AppliedGEHandles)
+			{
+				OwnerASC->RemoveActiveGameplayEffect(EffectHandle);
+				EffectHandle.Invalidate();
+
+			}
+		}
 	}
 
 	//remove gameplay effects and stats in this function.

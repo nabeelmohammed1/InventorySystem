@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
+#include "GameplayEffect.h"
+#include "ActiveGameplayEffectHandle.h"
 #include "EquipmentInstance.generated.h"
 
 class UItemInstance;
@@ -27,13 +29,16 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Equipment Instance")
 	TObjectPtr<AActor> SpawnedEquipmentActor;
 
+	UPROPERTY(BlueprintReadOnly, Category = "GAS")
+	TArray<FActiveGameplayEffectHandle> AppliedGEHandles;
+
 
 	UFUNCTION(BlueprintCallable, Category = "Equipment Instance")
-	void Initalize(UItemInstance* ItemInstance, ACharacter* Character);
+	void Initalize(UItemInstance* ItemInstance, ACharacter* Character, TSubclassOf<UGameplayEffect> EquipmentGE);
 
 
 	UFUNCTION(BlueprintCallable, Category = "Equipment Instance")
-	void SpawnEquipmentActor(ACharacter* Character);
+	void SpawnEquipmentActor(ACharacter* Character, TSubclassOf<UGameplayEffect> EquipmentGE);
 
 	UFUNCTION(BlueprintCallable, Category = "Equipment Instance")
 	void DestroyEquipmentActor(ACharacter* Character);

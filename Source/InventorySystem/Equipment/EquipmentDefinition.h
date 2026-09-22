@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
+#include "GameplayEffect.h"	
 #include "EquipmentDefinition.generated.h"
 
 /**
@@ -22,6 +23,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipment")
 	FName EquipmentSocketName;
 
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipment")
+	TArray<TSubclassOf<UGameplayEffect>> EffectsToApply;
 	
 };
