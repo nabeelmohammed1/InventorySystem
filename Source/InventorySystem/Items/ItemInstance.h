@@ -37,4 +37,17 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (DeterminesOutputType = "FragmentClass"))
 	const UInventoryItemFragment* FindFragmentByClass(const TSubclassOf<UInventoryItemFragment> FragmentClass);
+
+
+	UFUNCTION(BlueprintCallable, Category = "Rarity")
+	void SetItemRarity(EItemRarity NewRarity);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Rarity")
+	EItemRarity GetItemRarity() const;
+
+
+
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = "Display", meta = (AllowPrivateAccess = "true"))
+	EItemRarity Rarity = EItemRarity::None;
 };

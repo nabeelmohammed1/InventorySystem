@@ -42,3 +42,24 @@ const UInventoryItemFragment* UItemInstance::FindFragmentByClass(const TSubclass
 
 	return ItemCDO->FindFragmentByClass(ItemDefinition,FragmentClass);
 }
+
+void UItemInstance::SetItemRarity(EItemRarity NewRarity)
+{
+	// Set the rarity of the item instance
+	Rarity = NewRarity;
+}
+
+EItemRarity UItemInstance::GetItemRarity() const
+{
+	if(Rarity != EItemRarity::None)
+	{
+		return Rarity;
+	}
+
+	if (ItemDefinition)
+	{
+		return ItemDefinition.GetDefaultObject()->ItemRarity;
+	}
+	
+	return EItemRarity();
+}
