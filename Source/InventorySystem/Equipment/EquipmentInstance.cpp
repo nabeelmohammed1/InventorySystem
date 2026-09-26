@@ -4,9 +4,11 @@
 #include "InventorySystem/Items/ItemInstance.h"
 #include "InventorySystem/Equipment/EquipmentDefinition.h"
 #include "GameFramework/Character.h"
+#include "InventorySystem/AbilitySystem/BaseGameplayAbility.h"
 #include "GameplayEffect.h"	
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"	
+#include "GameplayAbilitySpec.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 void UEquipmentInstance::Initalize(UItemInstance* ItemInstance, ACharacter* Character, TSubclassOf<UGameplayEffect> EquipmentGE)
@@ -78,6 +80,19 @@ void UEquipmentInstance::SpawnEquipmentActor(ACharacter* Character,TSubclassOf<U
 
 		}
 	}
+
+	if (DefinitionCDO->AbilitiesToGrant.Num() > 0)
+	{
+		for (TSubclassOf<UBaseGameplayAbility> AbilityClass : DefinitionCDO->AbilitiesToGrant)
+		{
+			if (!AbilityClass) continue;
+
+			FGameplayAbilitySpec AbilitySpec(AbilityClass, 1, INDEX_NONE, this);
+			const FGameplayAbilitySpecHandle AbilityHandle = OwnerASC->GiveAbility(AbilitySpec);
+
+			GrantedAbilityHandles.Add(AbilityHandle);
+		}
+	}
 }
 
 void UEquipmentInstance::DestroyEquipmentActor(ACharacter* Character)
@@ -96,7 +111,15 @@ void UEquipmentInstance::DestroyEquipmentActor(ACharacter* Character)
 				EffectHandle.Invalidate();
 
 			}
+
+			for (const FGameplayAbilitySpecHandle& AbilityHandle : GrantedAbilityHandles)
+			{
+				OwnerASC->ClearAbility(AbilityHandle);
+			}
 		}
+
+		AppliedGEHandles.Empty();
+		GrantedAbilityHandles.Empty();
 	}
 
 	//remove gameplay effects and stats in this function.

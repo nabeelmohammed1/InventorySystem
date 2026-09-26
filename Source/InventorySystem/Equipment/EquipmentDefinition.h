@@ -7,6 +7,7 @@
 #include "GameplayEffect.h"	
 #include "EquipmentDefinition.generated.h"
 
+class UBaseGameplayAbility;
 /**
  * 
  */
@@ -25,5 +26,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipment")
 	TArray<TSubclassOf<UGameplayEffect>> EffectsToApply;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipment | Abilities")
+	TArray<TSubclassOf<UBaseGameplayAbility>> AbilitiesToGrant;
 	
 };

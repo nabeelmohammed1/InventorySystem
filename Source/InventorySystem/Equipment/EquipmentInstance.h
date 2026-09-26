@@ -6,6 +6,7 @@
 #include "UObject/Object.h"
 #include "GameplayEffect.h"
 #include "ActiveGameplayEffectHandle.h"
+#include "GameplayAbilitySpecHandle.h"
 #include "EquipmentInstance.generated.h"
 
 class UItemInstance;
@@ -31,6 +32,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "GAS")
 	TArray<FActiveGameplayEffectHandle> AppliedGEHandles;
+
+	UPROPERTY(BlueprintReadOnly, Category = "GAS")
+	TArray<FGameplayAbilitySpecHandle> GrantedAbilityHandles;
 
 
 	UFUNCTION(BlueprintCallable, Category = "Equipment Instance")
