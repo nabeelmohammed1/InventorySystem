@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "InventorySystem/Items/ItemInstance.h"
 #include "InventorySystem/Fragments/InventoryItemFragment_RarityR.h"
+#include "InventorySystem/Items/ItemInstance.h"
 
 void UInventoryItemFragment_RarityR::OnInstanceCreated_Implementation(UItemInstance* ItemInstance)
 {
