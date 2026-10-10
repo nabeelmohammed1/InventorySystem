@@ -43,6 +43,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Display", meta = (Categories = "Item.Type"))
 	FGameplayTagContainer ItemTagContainer;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Options")
+	bool bCanbeDestroyed = true;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly,Instanced,Category = "Fragments Array")
 	TArray<TObjectPtr<UInventoryItemFragment>> Fragments;
