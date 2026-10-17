@@ -6,6 +6,7 @@
 #include "UObject/Object.h"
 #include "UIAction.generated.h"
 
+class UWidget;
 class UInventoryManager;
 class UItemInstance;
 /**
@@ -18,7 +19,7 @@ class INVENTORYSYSTEM_API UUIAction : public UObject
 	
 public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	bool Exectue(UInventoryManager* InventoryManagerComponent,UItemInstance* ItemInstance);
+	bool Exectue(UInventoryManager* InventoryManagerComponent,UItemInstance* ItemInstance, UWidget* Widget);
 	
 	
 	

@@ -17,6 +17,7 @@ public class InventorySystem : ModuleRules
 			"GameplayTags",
 			"GameplayAbilities",
 			"GameplayTasks",
+			"UMG"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
